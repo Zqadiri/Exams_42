@@ -1,45 +1,48 @@
 
 #include "Warlock.hpp"
 
-Warlock::Warlock()
-{
+Warlock::Warlock(const std::string &n, const std::string &t) : name(n), title(t) {
+    std::cout << this->name << ": This looks like another boring day." << std::endl;
 }
 
-Warlock::~Warlock(){
-    std::cout << this->getName() << ": My job here is done!" << std::endl;
+Warlock::~Warlock() {
+    std::cout << this->name << ": My job here is done!" << std::endl;
 }
 
-Warlock::Warlock(const Warlock &)
-{
-
-}
-
-Warlock::Warlock(std::string n, std::string t)
-{
-    this->name = n;
-    std::cout << this->getName() << ": This looks like another boring day." << std::endl;
-    this->setTitle(t);
-}
-
-Warlock &Warlock::operator=(const Warlock&){
-    
-    return *this;
-}
-
-const std::string &Warlock::getName(void) const{
+const std::string&  Warlock::getName() const {
     return this->name;
 }
-
-const std::string &Warlock::getTitle(void) const{
+const std::string&  Warlock::getTitle() const {
     return this->title;
 }
-
-void 	Warlock::setTitle(const std::string &obj){
-    this->title = obj;
+void    Warlock::setTitle(const std::string &t) {
+    this->title = t;
 }
 
-void Warlock::introduce() const
-{
-    std::cout << this->getName() << ": I am " << this->getName() 
-        << ", " << this->getTitle() << " !" << std::endl;
+void    Warlock::introduce() const {
+    std::cout << this->name << ": I am " << this->name << ", "
+            << this->title << "!" << std::endl;
+}
+
+void    Warlock::learnSpell(ASpell *spell) {
+    for (size_t i = 0; i < this->spells.size(); i++)
+        if (this->spells[i]->getName() == spell->getName())
+            return ;
+    spells.push_back(spell->clone());
+}
+
+void    Warlock::forgetSpell(const std::string &name) {
+    for (std::vector<ASpell *>::iterator it = spells.begin(); it != spells.end(); it++)
+        if ((*it)->getName() == name)
+        {
+            delete *it;
+            this->spells.erase(it);
+            return ;
+        }
+}
+
+void    Warlock::launchSpell(const std::string &name, const ATarget &target) {
+    for (size_t i = 0; i < this->spells.size(); i++)
+        if (this->spells[i]->getName() == name)
+            return this->spells[i]->launch(target);
 }
